@@ -8,7 +8,7 @@ const Counter = ({ nb, title }) => {
         <Text
           style={[
             styles.counter,
-            { textAlign: title === "Tâche(s) complétées" ? "right" : "left" },
+            { textAlign: title === "Tâche(s) terminée(s)" ? "right" : "left" },
           ]}
         >
           {nb}

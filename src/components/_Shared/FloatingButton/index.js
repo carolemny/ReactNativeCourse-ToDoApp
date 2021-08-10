@@ -15,9 +15,9 @@ const FloatingButton = ({ toggleForm, isFormOpened }) => {
     >
       <Text style={styles.title}>
         {!isFormOpened && (
-          <MaterialIcons name="playlist-add" size={24} color="#fff" />
+          <MaterialIcons name="playlist-add" size={30} color="#fff" />
         )}
-        {isFormOpened && <Ionicons name="close" size={24} color="#fff" />}
+        {isFormOpened && <Ionicons name="close" size={30} color="#fff" />}
       </Text>
     </TouchableOpacity>
   );
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 40,
     right: 20,
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",

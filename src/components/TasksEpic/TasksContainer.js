@@ -1,53 +1,21 @@
 import React, { useState } from "react";
 import { View, Alert, StyleSheet } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+
 import TaskForm from "./TaskForm";
 import TasksList from "./TasksList";
 import CounterContainer from "./CounterContainer";
 import FloattingButton from "../_Shared/FloatingButton";
+import { getTasks } from "../../redux/selectors";
+import { deleteTask, updateTask } from "../../redux/actions";
 
 const TasksContainer = () => {
-  const [tasks, setTasks] = useState([
-    { id: new Date().getTime(), title: "Mon exemple de note", completed: true },
-  ]);
   const [isFormOpened, setIsFormOpened] = useState(false);
+  const [taskToUpdate, setTaskToUpdate] = useState({});
+  const dispatch = useDispatch();
+  const tasks = useSelector(getTasks);
 
-  const onAddTask = (title) => {
-    const newTask = {
-      id: new Date().getTime(),
-      title: title,
-      completed: false,
-    };
-    setTasks([newTask, ...tasks]);
-  };
-
-  const onChangeStatus = (id) => {
-    let newTasks = [];
-    tasks.forEach((task) => {
-      if (task.id === id) {
-        newTasks.push({
-          id: id,
-          title: task.title,
-          completed: !task.completed,
-        });
-      } else {
-        newTasks.push(task);
-      }
-    });
-    setTasks(newTasks);
-  };
-
-  const onDelete = (id) => {
-    console.log("onDelete");
-    let newTasks = [];
-    tasks.forEach((task) => {
-      if (task.id !== id) {
-        newTasks.push(task);
-      }
-    });
-    setTasks(newTasks);
-  };
-
-  const onClick = (id) => {
+  const onTrashClick = (id) => {
     Alert.alert(
       "Suppression d'une tâche",
       "Es-tu sûr(e) de vouloir supprimer cette tâche ?",
@@ -59,12 +27,16 @@ const TasksContainer = () => {
         {
           text: "Supprimer définitivement",
           onPress: () => {
-            console.log("OK Pressed");
-            onDelete(id);
+            dispatch(deleteTask(id));
           },
         },
       ]
     );
+  };
+
+  const onPencilClick = (idTask) => {
+    setTaskToUpdate(tasks.find(({ id }) => id === idTask));
+    toggleForm();
   };
 
   const getCompletedTasks = () => {
@@ -78,20 +50,45 @@ const TasksContainer = () => {
   };
 
   const toggleForm = () => {
+    if (isFormOpened) {
+      setTaskToUpdate({});
+    }
     setIsFormOpened(!isFormOpened);
+  };
+
+  const onUpdate = (updatedTask) => {
+    toggleForm();
+    dispatch(updateTask(updatedTask));
+  };
+
+  const onCircleClick = (taskId) => {
+    const taskWithNewStatus = tasks.find(({ id }) => id === taskId);
+    dispatch(
+      updateTask({
+        ...taskWithNewStatus,
+        completed: !taskWithNewStatus.completed,
+      })
+    );
   };
 
   return (
     <View style={styles.container}>
-      {isFormOpened && <TaskForm onAddTask={onAddTask} />}
+      {isFormOpened && (
+        <TaskForm
+          toggleForm={toggleForm}
+          taskToUpdate={taskToUpdate}
+          onUpdate={onUpdate}
+        />
+      )}
       <CounterContainer
         nbCompletedTasks={getCompletedTasks}
         nbTasks={tasks.length}
       />
       <TasksList
         tasks={tasks}
-        onChangeStatus={onChangeStatus}
-        onClick={onClick}
+        onTrashClick={onTrashClick}
+        onPencilClick={onPencilClick}
+        onCircleClick={onCircleClick}
       />
       <FloattingButton toggleForm={toggleForm} isFormOpened={isFormOpened} />
     </View>

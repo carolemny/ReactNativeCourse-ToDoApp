@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, Button } from "react-native";
+import { useDispatch } from "react-redux";
 
-const TaskForm = ({ onAddTask }) => {
-  const [title, setTitle] = useState("");
+import { addTask } from "../../redux/actions";
+
+const TaskForm = ({ toggleForm, taskToUpdate, onUpdate }) => {
+  const [title, setTitle] = useState(taskToUpdate.title);
+  const dispatch = useDispatch();
 
   const _onChangeText = (value) => {
     setTitle(value);
@@ -10,8 +14,8 @@ const TaskForm = ({ onAddTask }) => {
 
   const _onPressBtn = () => {
     if (title.length > 0) {
-      onAddTask(title);
-      setTitle("");
+      dispatch(addTask(title));
+      toggleForm();
     }
   };
 
@@ -22,10 +26,19 @@ const TaskForm = ({ onAddTask }) => {
           value={title}
           onChangeText={_onChangeText}
           style={styles.input}
+          autoFocus
         />
       </View>
       <View>
-        <Button onPress={_onPressBtn} color={"#72867B"} title={"Ajouter"} />
+        <Button
+          onPress={
+            taskToUpdate.id
+              ? () => onUpdate({ ...taskToUpdate, title })
+              : _onPressBtn
+          }
+          color={"#72867B"}
+          title={taskToUpdate.id ? "Modifier" : "Ajouter"}
+        />
       </View>
     </View>
   );

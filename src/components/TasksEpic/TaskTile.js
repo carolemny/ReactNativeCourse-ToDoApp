@@ -1,13 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
+import { AntDesign, Fontisto, Entypo, FontAwesome } from "@expo/vector-icons";
 
-const TaskTile = ({ id, title, status, onChangeStatus, onClick }) => {
+const TaskTile = ({ task, onTrashClick, onPencilClick, onCircleClick }) => {
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => onChangeStatus(id)}>
-          {status ? (
+        <TouchableOpacity onPress={() => onCircleClick(task.id)}>
+          {task.completed ? (
             <AntDesign name="checkcircleo" size={24} color="#77dd77" />
           ) : (
             <Entypo name="circle" size={24} color="#77dd77" />
@@ -17,19 +17,31 @@ const TaskTile = ({ id, title, status, onChangeStatus, onClick }) => {
           style={[
             styles.text,
             {
-              color: status ? "#9ea7b4" : "#282b32",
-              textDecorationLine: status ? "line-through" : "none",
+              color: task.completed ? "#9ea7b4" : "#282b32",
+              textDecorationLine: task.completed ? "line-through" : "none",
             },
           ]}
-          numberOfLines={2}
           ellipsizeMode="tail"
         >
-          {title}
+          {task.title}
         </Text>
       </View>
-      <TouchableOpacity onPress={() => onClick(id)}>
-        <Fontisto name="trash" size={24} color="#ff6961" />
-      </TouchableOpacity>
+      <View style={styles.subContainer}>
+        <TouchableOpacity style={styles.icons}>
+          <FontAwesome
+            onPress={() => onPencilClick(task.id)}
+            name="pencil"
+            size={20}
+            color="#a17b4a"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => onTrashClick(task.id)}
+          style={styles.icons}
+        >
+          <Fontisto name="trash" size={20} color="#ff6961" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -48,14 +60,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   subContainer: {
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 10,
   },
   text: {
     flex: 1,
     color: "#282b32",
     fontWeight: "500",
-    marginHorizontal: 30,
+    marginLeft: 15,
+    marginRight: 20,
+  },
+  icons: {
+    marginLeft: 15,
   },
 });
 

@@ -3,14 +3,13 @@ import { FlatList } from "react-native";
 
 import TaskTile from "./TaskTile";
 
-const TasksList = ({ tasks, onChangeStatus, onClick }) => {
+const TasksList = ({ tasks, onTrashClick, onPencilClick, onCircleClick }) => {
   const _renderItem = ({ item }) => (
     <TaskTile
-      title={item.title}
-      status={item.completed}
-      id={item.id}
-      onChangeStatus={onChangeStatus}
-      onClick={onClick}
+      task={{ id: item.id, title: item.title, completed: item.completed }}
+      onTrashClick={onTrashClick}
+      onPencilClick={onPencilClick}
+      onCircleClick={onCircleClick}
     ></TaskTile>
   );
 
